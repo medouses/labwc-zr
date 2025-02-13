@@ -378,12 +378,15 @@ fill_region(char *nodename, char *content, struct parser_state *state)
 		if (!state->current_region->name) {
 			state->current_region->name = xstrdup(content);
 		}
-	} else if (strstr("xywidtheight", nodename) && !strchr(content, '%')) {
-		wlr_log(WLR_ERROR, "Removing invalid region '%s': %s='%s' misses"
-			" a trailing %%", state->current_region->name, nodename, content);
-		wl_list_remove(&state->current_region->link);
-		zfree(state->current_region->name);
-		zfree(state->current_region);
+
+        // hack out trailing percentage sign requirement
+//	} else if (strstr("xywidtheight", nodename) && !strchr(content, '%')) {
+//		wlr_log(WLR_ERROR, "Removing invalid region '%s': %s='%s' misses"
+//			" a trailing %%", state->current_region->name, nodename, content);
+//		wl_list_remove(&state->current_region->link);
+//		zfree(state->current_region->name);
+//		zfree(state->current_region);
+
 	} else if (!strcmp(nodename, "x")) {
 		state->current_region->percentage.x = atoi(content);
 	} else if (!strcmp(nodename, "y")) {
@@ -1844,14 +1847,17 @@ validate(void)
 			|| box.y < 0 || box.y > 100
 			|| box.width <= 0 || box.width > 100
 			|| box.height <= 0 || box.height > 100;
-		if (invalid) {
-			wlr_log(WLR_ERROR,
-				"Removing invalid region '%s': %d%% x %d%% @ %d%%,%d%%",
-				region->name, box.width, box.height, box.x, box.y);
-			wl_list_remove(&region->link);
-			zfree(region->name);
-			free(region);
-		}
+
+		// hack out validation of input actually being a percentage
+//		if (invalid) {
+//			wlr_log(WLR_ERROR,
+//				"Removing invalid region '%s': %d%% x %d%% @ %d%%,%d%%",
+//				region->name, box.width, box.height, box.x, box.y);
+//			wl_list_remove(&region->link);
+//			zfree(region->name);
+//			free(region);
+//		}
+
 	}
 
 	/* Window-rule criteria */
